@@ -2,6 +2,13 @@ name: Build myprogram (reusable)
 
 on:
   workflow_call:
+    inputs:
+      options:
+        type: string
+        description: "Additional options to pass to CMake"
+      suffix:
+        type: string
+        description: "A suffix to add to the uploaded artifact filename"
 
 jobs:
 
@@ -18,12 +25,13 @@ jobs:
         uses: ./.github/actions/cmake-build
         with:
           src_dir: myprogram
+          options: ${{ inputs.options }}
 
       - name: Package
-        run: tar Jcf myprogram-${{ github.ref_name }}.tar.xz --transform 's,^\.,myprogram-${{ github.ref_name }},' -C install .
+        run: tar Jcf myprogram-${{ github.ref_name }}${{ inputs.suffix }}.tar.xz --transform 's,^\.,myprogram-${{ github.ref_name }},' -C install .
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: myprogram-${{ github.ref_name }}.tar.xz
-          path: myprogram-${{ github.ref_name }}.tar.xz
+          name: myprogram-${{ github.ref_name }}${{ inputs.suffix }}.tar.xz
+          path: myprogram-${{ github.ref_name }}${{ inputs.suffix }}.tar.xz
