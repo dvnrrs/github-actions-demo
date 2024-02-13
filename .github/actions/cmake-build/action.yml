@@ -1,0 +1,42 @@
+name: Build CMake Project
+description: Builds a project using CMake
+
+inputs:
+  src_dir:
+    type: string
+    description: ""
+    default: .
+  build_dir:
+    type: string
+    description: "The CMake build directory (default: build)"
+    default: build
+  options:
+    type: string
+    description: "Additional options to pass to CMake"
+  install:
+    type: boolean
+    description: "True to also run cmake install"
+    default: true
+  install_dir:
+    type: string
+    description: "The directory into which to install the project (default: install)"
+    default: install
+
+runs:
+
+  using: composite
+
+  steps:
+
+    - name: Configure
+      shell: bash
+      run: cmake -S "${{ inputs.src_dir }}" -B "${{ inputs.build_dir }}" ${{ inputs.options }}
+
+    - name: Build
+      shell: bash
+      run: cmake --build "${{ inputs.build_dir }}"
+
+    - name: Install
+      if: inputs.install
+      shell: bash
+      run: DESTDIR="${{ inputs.install_dir }}" cmake --install "${{ inputs.build_dir }}"
