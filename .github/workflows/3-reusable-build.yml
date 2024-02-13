@@ -1,0 +1,29 @@
+name: Build myprogram (reusable)
+
+on:
+  workflow_call:
+
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: CMake build & install
+        uses: ./.github/actions/cmake-build
+        with:
+          src_dir: myprogram
+
+      - name: Package
+        run: tar Jcf myprogram-${{ github.ref_name }}.tar.xz --transform 's,^\.,myprogram-${{ github.ref_name }},' -C install .
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: myprogram-${{ github.ref_name }}.tar.xz
+          path: myprogram-${{ github.ref_name }}.tar.xz

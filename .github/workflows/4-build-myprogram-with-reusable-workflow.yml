@@ -1,0 +1,8 @@
+name: Build myprogram w/ reusable workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/3-reusable-build.yml

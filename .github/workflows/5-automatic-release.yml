@@ -1,0 +1,26 @@
+name: Release myprogram
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+
+  build:
+    uses: ./.github/workflows/3-reusable-build.yml
+
+  publish:
+    name: Publish release
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+
+      - name: Get artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: '*'
