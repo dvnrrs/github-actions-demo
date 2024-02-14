@@ -4,8 +4,3 @@ int main()
 {
     std::cout << "hi\n";
 }
-
-
-xyz
-
-
